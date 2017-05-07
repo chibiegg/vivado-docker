@@ -1,13 +1,28 @@
 ## Build
 
-Place installer at `files/Xilinx_Vivado_SDK_2016.1_0409_1_Lin64.bin`.
+Place installer at `01-initial/files/Xilinx_Vivado_SDK_2016.1_0409_1_Lin64.bin`.
+
+
+### Stage 1
+
+Install vivado manually.
 
 ```
-docker build -t vivado:initial -f Dockerfile-initial .
-docker run -ti -p 5900:5900 --name vivado_install vivado:initial # Install with GUI
+cd ./01-initial/
+docker build -t vivado:initial .
+docker rm vivado_install
+docker run -ti -p 5900:5900 --name vivado_install vivado:initial # Install with GUI on VNC
 docker commit vivado_install vivado:installed
-docker build -t vivado:2016.01 -f Dockerfile-commit .
 ```
+
+
+### Stage 2
+
+```
+cd ./02-commit/
+docker build -t vivado:2016.01 .
+```
+
 
 ## Run
 
