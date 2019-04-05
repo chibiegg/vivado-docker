@@ -1,14 +1,14 @@
 #### Vivado HL WebPACK Install Configuration ####
-Edition=Vivado HL WebPACK
+Edition=Vivado HL System Edition
 
 # Path where Xilinx software will be installed.
 Destination=/opt/Xilinx
 
 # Choose the Products/Devices the you would like to install.
-Modules=Software Development Kit (SDK):0,DocNav:1,Kintex UltraScale:1,Zynq-7000:1,System Generator for DSP:0,Artix-7:0,Kintex-7:0
+Modules=Software Development Kit (SDK):0,DocNav:1,SoCs:1,7 Series:1,UltraScale:1,UltraScale+:1,
 
 # Choose the post install scripts you'd like to run as part of the finalization step. Please note that some of these scripts may require user interaction during runtime.
-InstallOptions=Acquire or Manage a License Key:0,Enable WebTalk for SDK to send usage statistics to Xilinx:0
+InstallOptions=Acquire or Manage a License Key:0,Enable WebTalk for Vivado to send usage statistics to Xilinx (Always enabled in WebPACK license):0,Enable WebTalk for SDK to send usage statistics to Xilinx:0
 
 ## Shortcuts and File associations ##
 # Choose whether Start menu/Application menu shortcuts will be created or not.
