@@ -46,37 +46,37 @@ build_kaniko_command:
 
 
 # Test for image with a custom file being added
-build_ubuntu_updated:
-  stage: build_ubuntu_stage
-  tags:
-    - docker-image-build
-  script: "echo 'Building image ...'"
-  variables:
-    NO_CACHE: true
-    TO: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-    CONTEXT_DIR: 01-initial/
-    NO_CACHE: "true"
-
-build_vivado:
-  stage: build_vivado_stage
-  tags:
-    - docker-image-build
-  script: "echo 'Building image ...'"
-  variables:
-    NO_CACHE: true
-    FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-    TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-    CONTEXT_DIR: 02-install/
-    NO_CACHE: "true"
-
-build_vnc:
-  stage: build_vnc_stage
-  tags:
-    - docker-image-build
-  script: "echo 'Building image ...'"
-  variables:
-    NO_CACHE: true
-    FROM: ${CI_REGISTRY_IMAGE}/vivado:latest
-    TO: ${CI_REGISTRY_IMAGE}/vivado_vnc:latest
-    CONTEXT_DIR: 03-setup/
-    NO_CACHE: "true"
+#build_ubuntu_updated:
+#  stage: build_ubuntu_stage
+#  tags:
+#    - docker-image-build
+#  script: "echo 'Building image ...'"
+#  variables:
+#    NO_CACHE: true
+#    TO: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+#    CONTEXT_DIR: 01-initial/
+#    NO_CACHE: "true"
+#
+#build_vivado:
+#  stage: build_vivado_stage
+#  tags:
+#    - docker-image-build
+#  script: "echo 'Building image ...'"
+#  variables:
+#    NO_CACHE: true
+#    FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+#    TO: ${CI_REGISTRY_IMAGE}/vivado:latest
+#    CONTEXT_DIR: 02-install/
+#    NO_CACHE: "true"
+#
+#build_vnc:
+#  stage: build_vnc_stage
+#  tags:
+#    - docker-image-build
+#  script: "echo 'Building image ...'"
+#  variables:
+#    NO_CACHE: true
+#    FROM: ${CI_REGISTRY_IMAGE}/vivado:latest
+#    TO: ${CI_REGISTRY_IMAGE}/vivado_vnc:latest
+#    CONTEXT_DIR: 03-setup/
+#    NO_CACHE: "true"
