@@ -1,0 +1,21 @@
+stages:
+  - build_test_images
+### Build
+
+# Build test images to verify that our build script works as
+# expected
+.build_test_image: &build_test_image
+  stage: build_test_images
+  tags:
+   - docker-image-build
+  script: "echo 'Building image ...'"
+  variables:
+    NO_CACHE: true
+
+# Test for image with a custom file being added
+build_context_dir_dockerfile:
+  <<: *build_test_image
+  variables:
+    TO: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+    CONTEXT_DIR: 01-initial/
+    NO_CACHE: "true"
