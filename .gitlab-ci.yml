@@ -16,7 +16,7 @@ stages:
 build_kaniko_command:
     stage: build
     tags:
-	- docker-privileged-xl
+        - docker-privileged-xl
     image: 
         # We recommend using the CERN version of the Kaniko image: gitlab-registry.cern.ch/ci-tools/docker-image-builder
         name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
