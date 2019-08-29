@@ -1,4 +1,5 @@
-FROM ubuntu:18.04-updated
+# FROM ubuntu:18.04-updated
+FROM gitlab-registry.cern.ch/aperloff/vivado-docker/ubuntu-updated
 
 COPY files/install_config.txt /opt/install_config.txt
 COPY files/install.sh /opt/install.sh
