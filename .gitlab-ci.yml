@@ -1,21 +1,41 @@
 stages:
-  - build_test_images
+  - build_ubuntu_stage
+  - build_vivado_stage
+  - build_vnc_stage
 ### Build
 
-# Build test images to verify that our build script works as
-# expected
-.build_test_image: &build_test_image
-  stage: build_test_images
+# Test for image with a custom file being added
+build_ubuntu_updated:
+  stage: build_ubuntu_stage
   tags:
-   - docker-image-build
+    - docker-image-build
   script: "echo 'Building image ...'"
   variables:
     NO_CACHE: true
-
-# Test for image with a custom file being added
-build_context_dir_dockerfile:
-  <<: *build_test_image
-  variables:
     TO: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
     CONTEXT_DIR: 01-initial/
+    NO_CACHE: "true"
+
+build_vivado:
+  stage: build_vivado_stage
+  tags:
+    - docker-image-build
+  script: "echo 'Building image ...'"
+  variables:
+    NO_CACHE: true
+    FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+    TO: ${CI_REGISTRY_IMAGE}/vivado:latest
+    CONTEXT_DIR: 02-install/
+    NO_CACHE: "true"
+
+build_vnc:
+  stage: build_vnc_stage
+  tags:
+    - docker-image-build
+  script: "echo 'Building image ...'"
+  variables:
+    NO_CACHE: true
+    FROM: ${CI_REGISTRY_IMAGE}/vivado:latest
+    TO: ${CI_REGISTRY_IMAGE}/vivado_vnc:latest
+    CONTEXT_DIR: 03-setup/
     NO_CACHE: "true"
