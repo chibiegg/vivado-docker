@@ -9,42 +9,40 @@ stages:
 
 # If you want to use DinD for your Docker-build jobs, you can use our privileged shared
 # GitLab-runners. This allows to directly build the image yourself as per https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
-build docker image with dind:
-  tags: 
-    - docker-privileged-xl
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-      # When using dind service we need to instruct docker, to talk with the
-      # daemon started inside of the service. The daemon is available with
-      # a network connection instead of the default /var/run/docker.sock socket.
-      #
-      # The 'docker' hostname is the alias of the service container as described at
-      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
-      #
-      # Note that if you're using Kubernetes executor, the variable should be set to
-      # tcp://localhost:2375 because of how Kubernetes executor connects services
-      # to the job container
-      #DOCKER_HOST: tcp://docker:2375/
-      # When using dind, it's wise to use the overlayfs driver for
-      # improved performance.
-      DOCKER_DRIVER: overlay2
-      NO_CACHE: true
-      FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-      TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-      CONTEXT_DIR: 02-install/
-      NO_CACHE: "true"
-  script:
-    - docker system df -v
-    - dockerd --storage-opt dm.basesize=50G
-    - docker system df -v
-    - docker info
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build --pull -t "$TO" $CONTEXT_DIR
-    - docker system df -v
-    - docker push "$TO"
+#build docker image with dind:
+#  tags: 
+#    - docker-privileged-xl
+#  stage: build
+#  image: docker:latest
+#  services:
+#    - docker:dind
+#  variables:
+#      # When using dind service we need to instruct docker, to talk with the
+#      # daemon started inside of the service. The daemon is available with
+#      # a network connection instead of the default /var/run/docker.sock socket.
+#      #
+#      # The 'docker' hostname is the alias of the service container as described at
+#      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+#      #
+#      # Note that if you're using Kubernetes executor, the variable should be set to
+#      # tcp://localhost:2375 because of how Kubernetes executor connects services
+#      # to the job container
+#      #DOCKER_HOST: tcp://docker:2375/
+#      # When using dind, it's wise to use the overlayfs driver for
+#      # improved performance.
+#      DOCKER_DRIVER: overlay2
+#      NO_CACHE: true
+#      FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+#      TO: ${CI_REGISTRY_IMAGE}/vivado:latest
+#      CONTEXT_DIR: 02-install/
+#      NO_CACHE: "true"
+#  script:
+#    - docker system df -v
+#    - docker info
+#    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#    - docker build --pull -t "$TO" $CONTEXT_DIR
+#    - docker system df -v
+#    - docker push "$TO"
 
 
 
@@ -67,29 +65,29 @@ build docker image with dind:
 
 # Kaniko is the recommended method for running Docker-builds as of May 2019. 
 # See https://docs.gitlab.com/ee/ci/docker/using_kaniko.html for GitLab's documentation.
-#build_kaniko_command:
-#    stage: build
-#    tags:
-#        - docker-privileged-xl
-#    image: 
-#        # We recommend using the CERN version of the Kaniko image: gitlab-registry.cern.ch/ci-tools/docker-image-builder
-#        name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
-#        entrypoint: [""]
-#    variables:
-#        NO_CACHE: true
-#        FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-#        TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-#        CONTEXT_DIR: 02-install/
-#        NO_CACHE: "true"
-#    script:
-#        # Prepare Kaniko configuration file
-#        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-#        # Build and push the image from the Dockerfile at the root of the project.
-#        # To push to a specific docker tag, amend the --destination parameter, e.g. --destination $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
-#        # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
-#        - df -ih
-#        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
-#        - df -ih
+build_kaniko_command:
+    stage: build
+    tags:
+        - docker-privileged-xl
+    image: 
+        # We recommend using the CERN version of the Kaniko image: gitlab-registry.cern.ch/ci-tools/docker-image-builder
+        name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
+        entrypoint: [""]
+    variables:
+        NO_CACHE: true
+        FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+        TO: ${CI_REGISTRY_IMAGE}/vivado:latest
+        CONTEXT_DIR: 02-install/
+        NO_CACHE: "true"
+    script:
+        # Prepare Kaniko configuration file
+        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+        # Build and push the image from the Dockerfile at the root of the project.
+        # To push to a specific docker tag, amend the --destination parameter, e.g. --destination $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+        # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
+        - df -ih
+        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
+        - df -ih
 
 # Features:
 # * Multi-stage builds: https://docs.docker.com/develop/develop-images/multistage-build/
