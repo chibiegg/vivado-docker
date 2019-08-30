@@ -12,6 +12,7 @@ RUN df -ih \
     && pv /opt/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz | tar -xzf - --directory /opt/ \
     && rm /opt/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz \
     && chmod +x /opt/Xilinx_Vivado_SDK_2019.1_0524_1430/xsetup \
+    && chmod +x /opt/install.sh \
     && /opt/install.sh \
     && df -ih \
     && rm -rf /opt/Xilinx_Vivado_SDK_2019.1_0524_1430/ \
