@@ -1,10 +1,14 @@
-# FROM ubuntu:18.04-updated
-FROM gitlab-registry.cern.ch/aperloff/vivado-docker/ubuntu-updated
+FROM ubuntu:18.04
+#FROM gitlab-registry.cern.ch/aperloff/vivado-docker/ubuntu-updated
 
 COPY files/install_config.txt /opt/install_config.txt
 COPY files/install.sh /opt/install.sh
+COPY files/xstartup /home/vivado/.vnc/xstartup
+COPY files/entrypoint.sh /opt/entrypoint.sh
 
-RUN df -ih \
+RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential libxrender-dev libxtst-dev vnc4server twm wget pv \
+    && rm -rf /var/lib/apt/lists/* \
+    && df -ih \
     && mkdir -p /opt \
     && x=$(wget -q -O - https://cernbox.cern.ch/index.php/s/xWjUduHViLUR9s4 \
     | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*") \
@@ -16,6 +20,14 @@ RUN df -ih \
     && /opt/install.sh \
     && df -ih \
     && rm -rf /opt/Xilinx_Vivado_SDK_2019.1_0524_1430/ \
-    && df -ih
+    && df -ih \
+    && rm -rf /tmp/.X* \
+    && mkdir -p /home/vivado/.vnc \
+    && useradd -ms /bin/bash vivado
+USER vivado
+WORKDIR /home/vivado
 
 ENV DISPLAY :0
+ENV GEOMETRY 1024x768
+
+ENTRYPOINT ["/opt/entrypoint.sh"]
