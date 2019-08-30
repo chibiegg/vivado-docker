@@ -8,11 +8,13 @@ RUN df -ih \
     && mkdir -p /opt \
     && x=$(wget -q -O - https://cernbox.cern.ch/index.php/s/KTD0iNlea0ecqnr \
     | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*") \
-    && wget -q -O /opt/Vivado_2018.2.tar.gz $x \
-    && pv /opt/Vivado_2018.2.tar.gz | tar -xzf - --directory /opt/ \
-    && rm /opt/Vivado_2018.2.tar.gz \
-    && chmod +x /opt/Vivado_2018.2/xsetup \
+    && wget -q -O /opt/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz $x \
+    && pv /opt/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz | tar -xzf - --directory /opt/ \
+    && rm /opt/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz \
+    && chmod +x /opt/Xilinx_Vivado_SDK_2019.1_0524_1430/xsetup \
     && /opt/install.sh \
+    && df -ih \
+    && rm -rf /opt/Xilinx_Vivado_SDK_2019.1_0524_1430/ \
     && df -ih
 
 ENV DISPLAY :0
