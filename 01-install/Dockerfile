@@ -23,7 +23,8 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential l
     && df -ih \
     && rm -rf /tmp/.X* \
     && mkdir -p /home/vivado/.vnc \
-    && useradd -ms /bin/bash vivado
+    && useradd -ms /bin/bash vivado \
+    && chown -R vivado /home/vivado
 USER vivado
 WORKDIR /home/vivado
 
