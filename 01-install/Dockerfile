@@ -6,7 +6,9 @@ COPY files/install.sh /opt/install.sh
 COPY files/xstartup /home/vivado/.vnc/xstartup
 COPY files/entrypoint.sh /opt/entrypoint.sh
 
-RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential default-jre xorg libxrender-dev libxtst-dev vnc4server twm wget pv vim\
+RUN apt-get update \
+    &&  apt-get -y upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential default-jre xorg libxrender-dev libxtst-dev vnc4server twm wget pv vim\
     && rm -rf /var/lib/apt/lists/* \
     && df -ih \
     && mkdir -p /opt \
