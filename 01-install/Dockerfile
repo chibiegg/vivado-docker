@@ -8,7 +8,8 @@ COPY files/entrypoint.sh /opt/entrypoint.sh
 
 RUN apt-get update \
     &&  apt-get -y upgrade \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential default-jre xorg libxrender-dev libxtst-dev vnc4server twm wget pv vim\
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential default-jre xorg libxrender-dev libxtst-dev vnc4server twm wget pv vim sudo \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && df -ih \
     && mkdir -p /opt \
@@ -26,7 +27,8 @@ RUN apt-get update \
     && rm -rf /tmp/.X* \
     && mkdir -p /home/vivado/.vnc \
     && useradd -ms /bin/bash vivado \
-    && chown -R vivado /home/vivado
+    && chown -R vivado /home/vivado \
+    && echo "source /opt/Xilinx/Vivado/${VIVADO_VERSION}/settings64.sh" >> /home/vivado/.bashrc
 USER vivado
 WORKDIR /home/vivado
 
