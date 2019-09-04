@@ -6,7 +6,7 @@ COPY files/install.sh /opt/install.sh
 COPY files/xstartup /home/vivado/.vnc/xstartup
 COPY files/entrypoint.sh /opt/entrypoint.sh
 
-RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential libxrender-dev libxtst-dev vnc4server twm wget pv \
+RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential default-jre xorg libxrender-dev libxtst-dev vnc4server twm wget pv vim\
     && rm -rf /var/lib/apt/lists/* \
     && df -ih \
     && mkdir -p /opt \
@@ -29,6 +29,6 @@ USER vivado
 WORKDIR /home/vivado
 
 ENV DISPLAY :0
-ENV GEOMETRY 1024x768
+ENV GEOMETRY 1920x1200
 
 ENTRYPOINT ["/opt/entrypoint.sh"]

@@ -36,7 +36,8 @@ docker build -t vivado:2018.02 .
 ## Run
 
 ```
-docker run -ti -p 5900:5900 -v `pwd`/work:/home/vivado/ --rm vivado:2018.02
+#docker run -ti -p 5900:5900 -v `pwd`/work:/home/vivado/ --rm vivado:2018.02
+docker run -ti -p 5900:5900 -v `pwd`/work:/home/vivado/ -e XILINXD_LICENSE_FILE=2100@torreys.colorado.edu:27016@ecee-flexlm.colorado.edu -e GEOMETRY=1920x1200 --rm gitlab-registry.cern.ch/aperloff/vivado-docker/vivado:latest
 ```
 
 and, connect to VNC server on the container.
@@ -51,6 +52,6 @@ Instead of using a VNC server, one can use X11. In this case you don't need to b
 ```
 IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')  # use en1 for Wifi
 xhost + $IP
-docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix gitlab-registry.cern.ch/aperloff/vivado-docker/vivado:latest /opt/Xilinx/Vivado/2019.1/bin/vivado -e XILINXD_LICENSE_FILE=2100@torreys.colorado.edu:27016@ecee-flexlm.colorado.edu
+docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix -e XILINXD_LICENSE_FILE=2100@torreys.colorado.edu:27016@ecee-flexlm.colorado.edu gitlab-registry.cern.ch/aperloff/vivado-docker/vivado:latest /opt/Xilinx/Vivado/2019.1/bin/vivado
 ```
-You may need to do ```docker llllllogin gitlab-registry.cern.ch``` in order to pull the image from gitlab. Use your cern username and password.
+You may need to do ```docker login gitlab-registry.cern.ch``` in order to pull the image from gitlab. Use your cern username and password.

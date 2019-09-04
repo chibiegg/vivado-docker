@@ -6,7 +6,7 @@ stages:
 
 # Kaniko is the recommended method for running Docker-builds as of May 2019. 
 # See https://docs.gitlab.com/ee/ci/docker/using_kaniko.html for GitLab's documentation.
-build_kaniko_command:
+build_image_using_kaniko:
     stage: build
     tags:
         - docker-privileged-xl
