@@ -1,12 +1,17 @@
-stages:
-  - build
-
-# Using Kaniko
-# ------------
-
 # Kaniko is the recommended method for running Docker-builds as of May 2019. 
 # See https://docs.gitlab.com/ee/ci/docker/using_kaniko.html for GitLab's documentation.
-build_image_using_kaniko:
+
+# Variables -------------------------------------------------------------------
+variables:
+    PROJ_NAME: 'vivado-$CI_COMMIT_REF_NAME-${OS}-${VIVADO_VERSION}-${VIEW}'
+
+
+# Stages ----------------------------------------------------------------------
+stages:
+    - build
+
+# Job templates ---------------------------------------------------------------
+.job_template: &template_build
     stage: build
     tags:
         - docker-privileged-xl
@@ -16,9 +21,7 @@ build_image_using_kaniko:
         entrypoint: [""]
     variables:
         NO_CACHE: true
-        FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
         TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-        CONTEXT_DIR: 01-install/
         NO_CACHE: "true"
     script:
         # Prepare Kaniko configuration file
@@ -30,52 +33,50 @@ build_image_using_kaniko:
         - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
         - df -ih
 
-# Features:
-# * Multi-stage builds: https://docs.docker.com/develop/develop-images/multistage-build/
-# * CVMFS is available if specifying the `cvmfs` tag
-# * Customise your build script
+# Jobs ------------------------------------------------------------------------
+build_ubuntu_vivado_vnc:
+    <<: *template_build
+    variables:
+        CONTEXT_DIR: ${OS}/01-${VIEW}/
+        FROM: ${OS}:${OS_VERSION} #${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+        OS: ubuntu
+        OS_VERSION: "18.04"
+        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest #${CI_REGISTRY_IMAGE}/vivado:latest
+        VIEW: vnc
+        VIVADO_VERSION: "2019.1"
 
-# Limitations
-# * If your base image does not have a PATH value, your Dockerfile will require to specify one. Ref. https://github.com/GoogleContainerTools/kaniko/issues/650
-# * Kaniko depends on the Docker image repositories supporting schema2 (https://docs.docker.com/registry/spec/manifest-v2-2/), both for pulling and pushing, so it will not work otherwise. As of July 2019, this is the case with quay.io. Ref https://github.com/moby/buildkit/issues/409
+build_sl_vivado_x11:
+    <<: *template_build
+    variables:
+        CONTEXT_DIR: ${OS}/01-${VIEW}/
+        FROM: ${OS}:${OS_VERSION} #${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+        OS: sl
+        OS_VERSION: "7"
+        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest #${CI_REGISTRY_IMAGE}/vivado:latest
+        VIEW: X11
+        VIVADO_VERSION: "2019.1"
 
 
-# Using DinD
-# ----------
-
-# If you want to use DinD for your Docker-build jobs, you can use our privileged shared
-# GitLab-runners. This allows to directly build the image yourself as per https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
-#build docker image with dind:
-#  tags: 
-#    - docker-privileged-xl
-#  stage: build
-#  image: docker:latest
-#  services:
-#    - docker:dind
-#  variables:
-#      # When using dind service we need to instruct docker, to talk with the
-#      # daemon started inside of the service. The daemon is available with
-#      # a network connection instead of the default /var/run/docker.sock socket.
-#      #
-#      # The 'docker' hostname is the alias of the service container as described at
-#      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
-#      #
-#      # Note that if you're using Kubernetes executor, the variable should be set to
-#      # tcp://localhost:2375 because of how Kubernetes executor connects services
-#      # to the job container
-#      #DOCKER_HOST: tcp://docker:2375/
-#      # When using dind, it's wise to use the overlayfs driver for
-#      # improved performance.
-#      DOCKER_DRIVER: overlay2
-#      NO_CACHE: true
-#      FROM: ${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-#      TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-#      CONTEXT_DIR: 01-install/
-#      NO_CACHE: "true"
-#  script:
-#    - docker system df -v
-#    - docker info
-#    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-#    - docker build --pull -t "$TO" $CONTEXT_DIR
-#    - docker system df -v
-#    - docker push "$TO"
+#build_image_using_kaniko:
+#    stage: build
+#    tags:
+#        - docker-privileged-xl
+#    image: 
+#        # We recommend using the CERN version of the Kaniko image: gitlab-registry.cern.ch/ci-tools/docker-image-builder
+#        name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
+#        entrypoint: [""]
+#    variables:
+#        NO_CACHE: true
+#        FROM: ubuntu:18.04 #${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
+#        TO: ${CI_REGISTRY_IMAGE}/vivado:latest
+#        CONTEXT_DIR: 01-vnc/
+#        NO_CACHE: "true"
+#    script:
+#        # Prepare Kaniko configuration file
+#        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+#        # Build and push the image from the Dockerfile at the root of the project.
+#        # To push to a specific docker tag, amend the --destination parameter, e.g. --destination $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+#        # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
+#        - df -ih
+#        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
+#        - df -ih
