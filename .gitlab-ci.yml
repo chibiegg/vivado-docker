@@ -30,6 +30,7 @@ stages:
         # To push to a specific docker tag, amend the --destination parameter, e.g. --destination $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
         # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
         - df -ih
+        - ls -lh $CI_PROJECT_DIR/$CONTEXT_DIR/
         - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
         - df -ih
 
