@@ -54,7 +54,7 @@ build_sl_vivado_x11:
         OS: sl
         OS_VERSION: "7"
         TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
-        VIEW: X11
+        VIEW: x11
         VIVADO_VERSION: "2019.1"
 
 
