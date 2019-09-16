@@ -4,7 +4,7 @@ COPY files/install_config.txt /opt/install_config.txt
 COPY files/install.sh /opt/install.sh
 COPY files/setup_ivarch.txt /opt/setup_ivarch.txt
 
-RUN cat setup_ivarch.txt >> /etc/yum.conf \
+RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && rpm --import http://www.ivarch.com/personal/public-key.txt \
     && yum -y install gcc gcc-c++ make java-1.8.0-openjdk libXrender-devel libXtst-devel xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps pv wget \
     && yum clean all \
