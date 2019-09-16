@@ -21,8 +21,6 @@ stages:
         entrypoint: [""]
     variables:
         NO_CACHE: true
-        TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-        NO_CACHE: "true"
     script:
         # Prepare Kaniko configuration file
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
