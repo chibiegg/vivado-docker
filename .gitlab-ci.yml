@@ -29,7 +29,7 @@ stages:
         # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
         - df -ih
         - ls -lh $CI_PROJECT_DIR/$CONTEXT_DIR/
-        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
+        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup --build-arg VIVADO_VERSION=${VIVADO_VERSION}
         - df -ih
 
 # Jobs ------------------------------------------------------------------------

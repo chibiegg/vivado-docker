@@ -81,3 +81,11 @@ open vnc://127.0.0.1:5900
 
 ## CU Specific Running Instructions
 In order to access the CU Vivado license it may be necessary to set an environment variable when running the docker container using ```-e XILINXD_LICENSE_FILE=2100@torreys.colorado.edu:27016@ecee-flexlm.colorado.edu```
+
+## Command Line Access to a Currently Running Container
+If you need to access the command line for a container which is currently running you can use the following command to open up a bash prompt:
+```bash
+docker exec -it <container name> bash
+```
+
+You may need to run ```docker ps -a``` to find the name of the container if you didn't set one yourself. Docker will set it's own name if you didn't specify one.
