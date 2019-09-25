@@ -4,7 +4,7 @@ COPY files/install_config.txt /opt/install_config.txt
 COPY files/install.sh /opt/install.sh
 COPY files/setup_ivarch.txt /opt/setup_ivarch.txt
 
-ARG VIVADO_VERSION
+ARG VIVADO_VERSION=2019.1
 ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/xWjUduHViLUR9s4
 ARG INSTALLER_NAME=Xilinx_Vivado_SDK_2019.1_0524_1430
 ARG INSTALLER_PATH=/opt/${INSTALLER_NAME}/
@@ -37,5 +37,6 @@ WORKDIR /home/vivado
 
 ENV DISPLAY :0
 ENV GEOMETRY 1920x1200
+ENV VIVADO_VERSION=${VIVADO_VERSION}
 
-ENTRYPOINT ["/opt/Xilinx/Vivado/${VIVADO_VERSION}/bin/vivado"]
+ENTRYPOINT /opt/Xilinx/Vivado/${VIVADO_VERSION}/bin/vivado
