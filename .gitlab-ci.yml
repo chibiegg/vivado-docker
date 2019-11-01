@@ -44,6 +44,17 @@ build_ubuntu_vivado2019-1_vnc:
         VIEW: vnc
         VIVADO_VERSION: "2019.1"
 
+build_sl_vivado2019-2_x11:
+    <<: *template_build
+    variables:
+        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
+        FROM: ${OS}:${OS_VERSION}
+        OS: sl
+        OS_VERSION: "7"
+        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
+        VIEW: x11
+        VIVADO_VERSION: "2019.2"
+
 build_sl_vivado2019-1_x11:
     <<: *template_build
     variables:
