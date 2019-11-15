@@ -14,7 +14,8 @@ stages:
 .job_template:
     stage: build
     only:
-      changes:
+      - web
+      - changes:
         - $CONTEXT_DIR/Dockerfile
         - $CONTEXT_DIR/**/*
     except:
