@@ -45,40 +45,40 @@ stages:
 
 # Jobs/Includes ---------------------------------------------------------------
 
-build_ubuntu_vivado2019-1_vnc:
-    extends: .job_template
-    variables:
-        OS: ubuntu
-        OS_VERSION: "18.04"
-        VIEW: vnc
-        VIVADO_VERSION: "2019.1"
+#build_ubuntu_vivado2019-1_vnc:
+#    extends: .job_template
+#    variables:
+#        OS: ubuntu
+#        OS_VERSION: "18.04"
+#        VIEW: vnc
+#        VIVADO_VERSION: "2019.1"
+#
+#build_sl_vivado2018-2_x11:
+#    extends: .job_template
+#    variables:
+#        OS: sl
+#        OS_VERSION: "7"
+#        VIEW: x11
+#        VIVADO_VERSION: "2018.2"
+#
+#build_sl_vivado2019-1_x11:
+#    extends: .job_template
+#    variables:
+#        OS: sl
+#        OS_VERSION: "7"
+#        VIEW: x11
+#        VIVADO_VERSION: "2019.1"
+#
+#build_sl_vivado2019-2_x11:
+#    extends: .job_template
+#    variables:
+#        OS: sl
+#        OS_VERSION: "7"
+#        VIEW: x11
+#        VIVADO_VERSION: "2019.2"
 
-build_sl_vivado2018-2_x11:
-    extends: .job_template
-    variables:
-        OS: sl
-        OS_VERSION: "7"
-        VIEW: x11
-        VIVADO_VERSION: "2018.2"
-
-build_sl_vivado2019-1_x11:
-    extends: .job_template
-    variables:
-        OS: sl
-        OS_VERSION: "7"
-        VIEW: x11
-        VIVADO_VERSION: "2019.1"
-
-build_sl_vivado2019-2_x11:
-    extends: .job_template
-    variables:
-        OS: sl
-        OS_VERSION: "7"
-        VIEW: x11
-        VIVADO_VERSION: "2019.2"
-
-#include:
-#    - local: '/ubuntu/2019.1/vnc/.gitlab-ci.yml'
-#    - local: '/sl/2018.2/x11/.gitlab-ci.yml'
-#    - local: '/sl/2019.1/x11/.gitlab-ci.yml'
-#    - local: '/sl/2019.2/x11/.gitlab-ci.yml'
+include:
+    - local: '/ubuntu/2019.1/vnc/.gitlab-ci.yml'
+    - local: '/sl/2018.2/x11/.gitlab-ci.yml'
+    - local: '/sl/2019.1/x11/.gitlab-ci.yml'
+    - local: '/sl/2019.2/x11/.gitlab-ci.yml'
