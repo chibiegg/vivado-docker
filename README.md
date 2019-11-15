@@ -4,7 +4,9 @@ For many reasons having Xilinx Vivado/Vivado HLS installed in a docker image can
 | **Linux Flavor** | **Vivado Version** | **X11** | **VNC** | **Status** |
 | ---------------- | ------------------ | ------- | ------- | ---------- |
 | Ubuntu 18.04     | 2019.1             | Yes     | Yes     | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) |
+| SL7              | 2018.2             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
 | SL7              | 2019.1             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
+| SL7              | 2019.2             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
 
 The Ubuntu version features both X11 and VNC and is generally less secure. The Scientific Linux (SL) container was built with security in mind. It is meant to conform with the security policies laid out by Fermi National Accelerator Laboratory (FNAL).
 

@@ -13,6 +13,13 @@ stages:
 # Job templates ---------------------------------------------------------------
 .job_template: &template_build
     stage: build
+    only:
+      changes:
+        - $CONTEXT_DIR/Dockerfile
+        - $CONTEXT_DIR/**/*
+    except:
+      changes:
+        - "*.md"
     tags:
         - docker-privileged-xl
     image: 
@@ -21,6 +28,9 @@ stages:
         entrypoint: [""]
     variables:
         NO_CACHE: true
+        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
+        FROM: ${OS}:${OS_VERSION}
+        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
     script:
         # Prepare Kaniko configuration file
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
@@ -32,71 +42,9 @@ stages:
         - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup --build-arg VIVADO_VERSION=${VIVADO_VERSION}
         - df -ih
 
-# Jobs ------------------------------------------------------------------------
-build_ubuntu_vivado2019-1_vnc:
-    <<: *template_build
-    variables:
-        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
-        FROM: ${OS}:${OS_VERSION}
-        OS: ubuntu
-        OS_VERSION: "18.04"
-        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
-        VIEW: vnc
-        VIVADO_VERSION: "2019.1"
-
-build_sl_vivado2019-2_x11:
-    <<: *template_build
-    variables:
-        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
-        FROM: ${OS}:${OS_VERSION}
-        OS: sl
-        OS_VERSION: "7"
-        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
-        VIEW: x11
-        VIVADO_VERSION: "2019.2"
-
-build_sl_vivado2019-1_x11:
-    <<: *template_build
-    variables:
-        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
-        FROM: ${OS}:${OS_VERSION}
-        OS: sl
-        OS_VERSION: "7"
-        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
-        VIEW: x11
-        VIVADO_VERSION: "2019.1"
-
-build_sl_vivado2018-2_x11:
-    <<: *template_build
-    variables:
-        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
-        FROM: ${OS}:${OS_VERSION}
-        OS: sl
-        OS_VERSION: "7"
-        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
-        VIEW: x11
-        VIVADO_VERSION: "2018.2"
-
-#build_image_using_kaniko:
-#    stage: build
-#    tags:
-#        - docker-privileged-xl
-#    image: 
-#        # We recommend using the CERN version of the Kaniko image: gitlab-registry.cern.ch/ci-tools/docker-image-builder
-#        name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
-#        entrypoint: [""]
-#    variables:
-#        NO_CACHE: true
-#        FROM: ubuntu:18.04 #${CI_REGISTRY_IMAGE}/ubuntu-updated:latest
-#        TO: ${CI_REGISTRY_IMAGE}/vivado:latest
-#        CONTEXT_DIR: 01-vnc/
-#        NO_CACHE: "true"
-#    script:
-#        # Prepare Kaniko configuration file
-#        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-#        # Build and push the image from the Dockerfile at the root of the project.
-#        # To push to a specific docker tag, amend the --destination parameter, e.g. --destination $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
-#        # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
-#        - df -ih
-#        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup
-#        - df -ih
+# Jobs/Includes ---------------------------------------------------------------
+include:
+    - 'ubuntu/2019.1/vnc/.gitlab-ci.yml'
+    - 'sl/2018.2/x11/.gitlab-ci.yml'
+    - 'sl/2019.1/x11/.gitlab-ci.yml'
+    - 'sl/2019.2/x11/.gitlab-ci.yml'
