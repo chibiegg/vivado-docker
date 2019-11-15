@@ -14,10 +14,10 @@ stages:
 .job_template:
     stage: build
     only:
-      - web
       - changes:
         - $CONTEXT_DIR/Dockerfile
         - $CONTEXT_DIR/**/*
+        - web
     except:
       changes:
         - "*.md"
