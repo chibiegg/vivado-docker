@@ -44,7 +44,7 @@ stages:
 
 # Jobs/Includes ---------------------------------------------------------------
 include:
-    - 'ubuntu/2019.1/vnc/.gitlab-ci.yml'
+    #- 'ubuntu/2019.1/vnc/.gitlab-ci.yml'
     - 'sl/2018.2/x11/.gitlab-ci.yml'
     - 'sl/2019.1/x11/.gitlab-ci.yml'
     - 'sl/2019.2/x11/.gitlab-ci.yml'
