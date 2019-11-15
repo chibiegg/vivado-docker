@@ -1,5 +1,5 @@
 build_sl_vivado2018-2_x11:
-    <<: *template_build
+    extends: .job_template
     variables:
         OS: sl
         OS_VERSION: "7"

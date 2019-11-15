@@ -11,7 +11,7 @@ stages:
     - build
 
 # Job templates ---------------------------------------------------------------
-.job_template: &template_build
+.job_template:
     stage: build
     only:
       changes:

@@ -1,5 +1,5 @@
 build_ubuntu_vivado2019-1_vnc:
-    <<: *template_build
+    extends: .job_template
     variables:
         OS: ubuntu
         OS_VERSION: "18.04"
