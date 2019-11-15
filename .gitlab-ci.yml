@@ -27,10 +27,10 @@ stages:
         name: gitlab-registry.cern.ch/ci-tools/docker-image-builder
         entrypoint: [""]
     variables:
-        NO_CACHE: true
-        CONTEXT_DIR: ${OS}/${VIVADO_VERSION}/${VIEW}/
-        FROM: ${OS}:${OS_VERSION}
-        TO: ${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest
+        NO_CACHE: "true"
+        CONTEXT_DIR: "${OS}/${VIVADO_VERSION}/${VIEW}/"
+        FROM: "${OS}:${OS_VERSION}"
+        TO: "${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest"
     script:
         # Prepare Kaniko configuration file
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
@@ -44,7 +44,7 @@ stages:
 
 # Jobs/Includes ---------------------------------------------------------------
 include:
-    #- 'ubuntu/2019.1/vnc/.gitlab-ci.yml'
+    - 'ubuntu/2019.1/vnc/.gitlab-ci.yml'
     - 'sl/2018.2/x11/.gitlab-ci.yml'
     - 'sl/2019.1/x11/.gitlab-ci.yml'
     - 'sl/2019.2/x11/.gitlab-ci.yml'
