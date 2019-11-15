@@ -13,14 +13,14 @@ stages:
 # Job templates ---------------------------------------------------------------
 .job_template:
     stage: build
-    only:
-      changes:
-        - $CONTEXT_DIR/Dockerfile
-        - $CONTEXT_DIR/**/*
-        - web
-    except:
-      changes:
-        - "*.md"
+#    only:
+#      changes:
+#        - $CONTEXT_DIR/Dockerfile
+#        - $CONTEXT_DIR/**/*
+#        - web
+#    except:
+#      changes:
+#        - "*.md"
     tags:
         - docker-privileged-xl
     image: 
