@@ -57,7 +57,7 @@ vivado_docker() {
     if [[ "$local" != "" ]]; then
         local local_mount="-v ${local}:${remote}"
     else
-        echo "NOTE: No local mount set."
+        echo "Note: No local mount set."
     fi
 
     # Capture the output of the xhost command and look for the lines:
