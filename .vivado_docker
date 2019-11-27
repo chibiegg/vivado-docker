@@ -1,0 +1,112 @@
+#!/bin/bash
+
+vivado_docker() {
+    local debug="false"
+    local entrypoint=""
+    local local=""
+    local remote="/home/vivado/local_mount/"
+    local usage="$FUNCNAME [-h] [-l <loacal path to mount>] [-r <remote path to mount>] -e <entrypoint>
+    -- opens a docker container which contains Xilinx Vivado HLx Design Edition
+       there are multiple entrypoints (programs) to choose from
+
+    entrypoints:
+        1) vivado
+        2) hls
+        3) bash
+
+    where:
+        -h  show this help text
+        -e  sets the entrypoint (default: ${entrypoint})
+        -l  local path to mount in container (default: ${local})
+        -r  remote path to mount in the container (default: ${remote})
+
+    example: vivado_docker -e bash -l `pwd` -r /root/workdir"
+
+    local OPTIND OPTARG
+    while getopts 'hde:l:r:' option; do
+        case "$option" in
+            d) debug="true"
+               ;;
+            e) entrypoint=$OPTARG
+               ;;
+            h) echo "$usage"
+               return 0
+               ;;
+            l) local=$OPTARG
+               ;;
+            r) remote=$OPTARG
+               ;;
+            :) printf "missing argument for -%s\n" "$OPTARG" >&2
+               echo "$usage" >&2
+               return -1
+               ;;
+            \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+                echo "$usage" >&2
+                return -2
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [[ "$entrypoint" == "" ]]; then
+        echo "ERROR: You must specify an entrypoint!"
+        echo "$usage" >&2
+        return -3
+    fi
+
+    if [[ "$local" != "" ]]; then
+        local local_mount="-v ${local}:${remote}"
+    else
+        echo "NOTE: No local mount set."
+    fi
+
+    # Capture the output of the xhost command and look for the lines:
+    #  "access control enabled, only authorized clients can connect"
+    #  "INET:localhost
+    # If the first is different, then the xhost access should be reset by doing:
+    #  xhost -
+    # Then check again. If either the second line is missing, or the first was there, but the second one was missing, then do:
+    #  xhost +127.0.0.1
+    # Then check again. If it's not right this time, then exit and throw an error
+    xhost_enabled="access control enabled, only authorized clients can connect"
+    xhost_localhost="INET:localhost"
+    xhost_check="$(xhost)"
+    if [[ $xhost_check == *"${xhost_localhost}"* ]]; then
+        echo "Note::access control already enabled, including an opening for localhost"
+    else
+        xhost -
+        xhost_check="$(xhost)"
+        if [[ $xhost_check != *"${xhost_enabled}"* ]]; then
+            xhost +127.0.0.1
+            xhost_check="$(xhost)"
+            if [[ $xhost_check != *"${xhost_localhost}"* ]]; then
+                echo "ERROR:Unable to set the xhost settings properly"
+                return -3
+            fi
+        fi
+    fi
+
+    if [[ "$debug" == "true" ]]; then
+        set -x
+    fi
+    case "${entrypoint}" in
+        vivado)
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} gitlab-registry.cern.ch/aperloff/vivado\
+-docker/sl7_vivado2019.1_x11:latest /opt/Xilinx/Vivado/2019.1/bin/vivado
+            ;;
+        hls)
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /opt/Xilinx/Vivado/2019.1/\
+bin/vivado_hls gitlab-registry.cern.ch/aperloff/vivado-docker/sl7_vivado2019.1_x11:latest
+            ;;
+        bash)
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /bin/bash gitlab-registry.\
+cern.ch/aperloff/vivado-docker/sl7_vivado2019.1_x11:latest
+            ;;
+        *)
+            echo "ERROR::Unknown executable. Would you like to run Vivado (vivado), Vivado HLS (hls), or bash (bash)?"
+            set +x
+            return -4
+            ;;
+    esac
+    set +x
+}
