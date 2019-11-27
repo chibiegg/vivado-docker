@@ -49,6 +49,8 @@ To open the remote program and start an x-window use the command:
 docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag> /opt/Xilinx/Vivado/2019.1/bin/vivado
 ```
 
+**Note:** You may need to do ```docker login gitlab-registry.cern.ch``` in order to pull the image from GitLab. Use your CERN username and password.
+
 ### Use the System IP Address
 This is a less secure method of connecting the remote program to the X11 system on the host. This is because you are allowing the remote system to access the internet and then connect to your system's external IP address. While the xhost command does limit the connections to just that one address, this is still note the best practice and may get you booted off the network at FNAL.
 
@@ -66,7 +68,13 @@ To override the entrypoint, you need to use the ```--entrypoint``` option. You m
 docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag>
 ```
 
-**Note:** You may need to do ```docker login gitlab-registry.cern.ch``` in order to pull the image from GitLab. Use your CERN username and password.
+### vivado_docker Bash Function
+Inside the file ```.vivado_docker``` there is a bash function named vivado_docker. This function is meant to help the user quickly spin up a one of these docker containers. Rather than having to remember the entire docker run command and the variations for each entrypoint, this function provides a much simpler interface. It is based on the "Direct Connection" method mentioned above. I find it useful to source the ```.vivado_docker``` file from within my login script.
+
+For a complete set of directions on how to use this utility, see the functions help message. Simply use:
+```bash
+vivado_docker -h
+```
 
 ## Run Using VNC
 VNC is not my favorite way to interact with remote programs. Resizing of windows always seems haphazard. That being said, the Ubuntu version of this container was built with VNC available. To run it, use the command:
