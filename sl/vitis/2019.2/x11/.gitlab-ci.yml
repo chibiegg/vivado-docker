@@ -1,5 +1,7 @@
 build_sl_vitis2019-2_x11:
     extends: .job_template
+    tags:
+        - cu-lnxfarm327-docker-privileged-xl
     variables:
         OS: sl
         OS_VERSION: "7"
@@ -9,6 +11,8 @@ build_sl_vitis2019-2_x11:
 
 build_sl_vitis2019-2_x11_dockerhub:
     extends: .job_template
+    tags:
+        - cu-lnxfarm327-docker-privileged-xl
     variables:
         CI_REGISTRY: https://index.docker.io/v1/
         CI_REGISTRY_USER: ${DOCKER_USERNAME}
