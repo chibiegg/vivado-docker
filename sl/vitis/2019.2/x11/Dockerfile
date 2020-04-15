@@ -4,9 +4,9 @@ COPY files/install_config.txt /opt/install_config.txt
 COPY files/install.sh /opt/install.sh
 COPY files/setup_ivarch.txt /opt/setup_ivarch.txt
 
-ARG VIVADO_VERSION=2019.2
-ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/Wny7R3aCSNy3MOm
-ARG INSTALLER_NAME=Xilinx_Vivado_2019.2_1024_1831
+ARG VERSION=2019.2
+ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/O4MY1d3DR3BXAZB/
+ARG INSTALLER_NAME=Xilinx_Vitis_2019.2_1024_1831
 ARG INSTALLER_PATH=/opt/${INSTALLER_NAME}/
 ARG TARBALL_NAME=${INSTALLER_NAME}.tar.gz
 ARG TARBALL_PATH=/opt/${TARBALL_NAME}
@@ -29,14 +29,14 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && rm -rf ${INSTALLER_PATH} \
     && df -ih \
     && rm -rf /tmp/.X* \
-    && useradd -ms /bin/bash vivado \
-    && chown -R vivado /home/vivado \
-    && echo "source /opt/Xilinx/Vivado/${VIVADO_VERSION}/settings64.sh" >> /home/vivado/.bashrc
-USER vivado
-WORKDIR /home/vivado
+    && useradd -ms /bin/bash vitis \
+    && chown -R vitis /home/vitis \
+    && echo "source /opt/Xilinx/Vitis/Vitis/${VERSION}/settings64.sh" >> /home/vitis/.bashrc
+USER vitis
+WORKDIR /home/vitis
 
 ENV DISPLAY :0
 ENV GEOMETRY 1920x1200
-ENV VIVADO_VERSION=${VIVADO_VERSION}
+ENV VERSION=${VERSION}
 
-ENTRYPOINT /opt/Xilinx/Vivado/${VIVADO_VERSION}/bin/vivado
+ENTRYPOINT /opt/Xilinx/Vitis/Vitis/${VERSION}/bin/vitis

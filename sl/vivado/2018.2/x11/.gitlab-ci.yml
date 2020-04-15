@@ -3,5 +3,6 @@ build_sl_vivado2018-2_x11:
     variables:
         OS: sl
         OS_VERSION: "7"
+        SERIES: "vivado"
+        VERSION: "2018.2"
         VIEW: x11
-        VIVADO_VERSION: "2018.2"

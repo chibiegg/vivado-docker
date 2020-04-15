@@ -3,7 +3,7 @@
 
 # Variables -------------------------------------------------------------------
 variables:
-    PROJ_NAME: 'vivado-$CI_COMMIT_REF_NAME-${OS}-${VIVADO_VERSION}-${VIEW}'
+    PROJ_NAME: '${SERIES}-$CI_COMMIT_REF_NAME-${OS}-${VERSION}-${VIEW}'
 
 
 # Stages ----------------------------------------------------------------------
@@ -29,9 +29,9 @@ stages:
         entrypoint: [""]
     variables:
         NO_CACHE: "true"
-        CONTEXT_DIR: "${OS}/${VIVADO_VERSION}/${VIEW}/"
+        CONTEXT_DIR: "${OS}/${SERIES}/${VERSION}/${VIEW}/"
         FROM: "${OS}:${OS_VERSION}"
-        TO: "${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_vivado${VIVADO_VERSION}_${VIEW}:latest"
+        TO: "${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_${SERIES}${VERSION}_${VIEW}:latest"
     script:
         # Prepare Kaniko configuration file
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
@@ -40,12 +40,13 @@ stages:
         # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
         - df -ih
         - ls -lh $CI_PROJECT_DIR/$CONTEXT_DIR/
-        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup --build-arg VIVADO_VERSION=${VIVADO_VERSION}
+        - /kaniko/executor --context $CI_PROJECT_DIR/$CONTEXT_DIR --dockerfile $CI_PROJECT_DIR/$CONTEXT_DIR/Dockerfile --destination $TO --single-snapshot --cleanup --build-arg VERSION=${VERSION}
         - df -ih
 
 # Jobs/Includes ---------------------------------------------------------------
 include:
-    - local: '/ubuntu/2019.1/vnc/.gitlab-ci.yml'
-    - local: '/sl/2018.2/x11/.gitlab-ci.yml'
-    - local: '/sl/2019.1/x11/.gitlab-ci.yml'
-    - local: '/sl/2019.2/x11/.gitlab-ci.yml'
+    - local: '/ubuntu/vivado/2019.1/vnc/.gitlab-ci.yml'
+    - local: '/sl/vivado/2018.2/x11/.gitlab-ci.yml'
+    - local: '/sl/vivado/2019.1/x11/.gitlab-ci.yml'
+    - local: '/sl/vivado/2019.2/x11/.gitlab-ci.yml'
+    - local: '/sl/vitis/2019.2/x11/.gitlab-ci.yml'
