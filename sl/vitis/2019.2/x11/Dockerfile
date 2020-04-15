@@ -5,7 +5,7 @@ COPY files/install.sh /opt/install.sh
 COPY files/setup_ivarch.txt /opt/setup_ivarch.txt
 
 ARG VERSION=2019.2
-ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/O4MY1d3DR3BXAZB/
+ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/O4MY1d3DR3BXAZB
 ARG INSTALLER_NAME=Xilinx_Vitis_2019.2_1024_1831
 ARG INSTALLER_PATH=/opt/${INSTALLER_NAME}/
 ARG TARBALL_NAME=${INSTALLER_NAME}.tar.gz
