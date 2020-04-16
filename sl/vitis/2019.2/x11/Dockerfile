@@ -17,18 +17,32 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && yum clean all \
     && df -ih \
     && mkdir -p /opt \
+    && ls -alh / \
     && x=$(wget -q -O - ${CERNBOX_URL} \
     | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*") \
-    && wget -q -O ${TARBALL_PATH} $x \
+    && echo "The CERNBox download url is: ${x}" \
+    && echo "Downloading the installation file ..." \
+    && wget -O ${TARBALL_PATH} $x \
+    && ls -alh /opt \
+    && echo "Unpacking the tarball ..." \
     && pv ${TARBALL_PATH} | tar -xzf - --directory /opt/ \
+    && ls -alh /opt \
+    && echo "Removing the tarball ..." \
     && rm ${TARBALL_PATH} \
+    && ls -alh /opt \
+    && echo "Installing Vitis ${VERSION} ..." \
     && chmod +x ${INSTALLER_PATH}/xsetup \
     && chmod +x /opt/install.sh \
     && /opt/install.sh \
     && df -ih \
+    && ls -alh /opt \
+    && echo -e "Installation complete!!!\nRemoving the installer ..." \
     && rm -rf ${INSTALLER_PATH} \
     && df -ih \
+    && ls -alh /opt \
+    && echo "Cleaning /tmp ..." \
     && rm -rf /tmp/.X* \
+    && echo "Setting up the 'vitis' user ..." \
     && useradd -ms /bin/bash vitis \
     && chown -R vitis /home/vitis \
     && echo "source /opt/Xilinx/Vitis/Vitis/${VERSION}/settings64.sh" >> /home/vitis/.bashrc
