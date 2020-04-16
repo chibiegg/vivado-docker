@@ -26,7 +26,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && mkdir -p /opt \
     && ls -alh / \
     && echo "Downloading the split tarball ..." \
-    && CERNBOX_URL_ARRAY=$(echo ${CERNBOX_URL_LIST} | tr ";" "\n") \
+    && IFS='; ' read -r -a CERNBOX_URL_ARRAY <<< "${CERNBOX_URL_LIST}" \
     && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
            CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
            CERNBOX_URL_DOWNLOAD=$(wget -q -O - ${CERNBOX_URL} | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*"); \
