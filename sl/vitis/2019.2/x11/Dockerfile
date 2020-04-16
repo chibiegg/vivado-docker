@@ -27,13 +27,13 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && ls -alh / \
     && echo "Downloading the split tarball ..." \
     && CERNBOX_URL_ARRAY=$(echo ${CERNBOX_URL_LIST} | tr ";" "\n") \
-    && for i in "${!$CERNBOX_URL_ARRAY[@]}"; do \
-           CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}" \
-           CERNBOX_URL_DOWNLOAD=$(wget -q -O - ${CERNBOX_URL} | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*") \
-           echo -e "\tDownloading file ${i} ..." \
-           echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}" \
-           echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${i}" \
-           wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${i} ${CERNBOX_URL_DOWNLOAD} \
+    && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
+           CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
+           CERNBOX_URL_DOWNLOAD=$(wget -q -O - ${CERNBOX_URL} | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*"); \
+           echo -e "\tDownloading file ${i} ..."; \
+           echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}"; \
+           echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${i}"; \
+           wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${i} ${CERNBOX_URL_DOWNLOAD}; \
        done \
     && ls -alh /opt \
     && echo "Combining the split tarball ..." \
