@@ -22,7 +22,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*") \
     && echo "The CERNBox download url is: ${x}" \
     && echo "Downloading the installation file ..." \
-    && wget --progress=dot:giga -O ${TARBALL_PATH} $x \
+    && wget --progress=dot:giga -c -O ${TARBALL_PATH} $x \
     && ls -alh /opt \
     && echo "Unpacking the tarball ..." \
     && pv ${TARBALL_PATH} | tar -xzf - --directory /opt/ \
