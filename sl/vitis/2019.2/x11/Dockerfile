@@ -59,7 +59,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}"; \
            echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${INDEX}"; \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
-           df -ih; \
+           df -h; \
        done \
     && ls -alh /opt \
     && echo "Combining the split tarball ..." \
