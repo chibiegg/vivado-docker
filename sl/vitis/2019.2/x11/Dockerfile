@@ -40,6 +40,7 @@ ARG INSTALLER_NAME=Xilinx_Vitis_2019.2_1024_1831
 ARG INSTALLER_PATH=/opt/${INSTALLER_NAME}/
 ARG TARBALL_NAME=${INSTALLER_NAME}.tar.gz
 ARG TARBALL_PATH=/opt/${TARBALL_NAME}
+ARG REFERENCE_MD5SUM=bfce957cde3aa029b524d31d4ded9420
 
 RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && rpm --import http://www.ivarch.com/personal/public-key.txt \
@@ -58,20 +59,27 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}"; \
            echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${INDEX}"; \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
+           df -ih \
        done \
     && ls -alh /opt \
     && echo "Combining the split tarball ..." \
     && cat ${TARBALL_PATH}.part* > ${TARBALL_PATH} \
     && ls -alh /opt \
+    && df -ih \
     && echo "Removing the individual components of the split tarball ..." \
     && rm ${TARBALL_PATH}.part* \
     && ls -alh /opt \
+    && echo "Checking the md5sum of the combined tarball ..." \
+    && checksum=$(echo $(md5sum ${TARBALL_PATH}) | awk '{print $1;}') \
+    && [[ "${checksum}" == "${REFERENCE_MD5SUM}" ]] && echo "Checksums match!" || echo "WARNING::The checksums of the original tarball and the merged tarball don't match!"\
     && echo "Unpacking the tarball ..." \
     && pv ${TARBALL_PATH} | tar -xzf - --directory /opt/ \
     && ls -alh /opt \
+    && df -ih \
     && echo "Removing the tarball ..." \
     && rm ${TARBALL_PATH} \
     && ls -alh /opt \
+    && df -ih \
     && echo "Installing Vitis ${VERSION} ..." \
     && chmod +x ${INSTALLER_PATH}/xsetup \
     && chmod +x /opt/install.sh \
