@@ -5,14 +5,37 @@ COPY files/install.sh /opt/install.sh
 COPY files/setup_ivarch.txt /opt/setup_ivarch.txt
 
 ARG VERSION=2019.2
-#ARG CERNBOX_URL=https://cernbox.cern.ch/index.php/s/O4MY1d3DR3BXAZB
-ARG CERNBOX_URL_LIST="https://cernbox.cern.ch/index.php/s/hqgHwCM9j9NdgyY;\
-                      https://cernbox.cern.ch/index.php/s/GTr3fZxLpVxn7Fh;\
-                      https://cernbox.cern.ch/index.php/s/6y2iOz3QomQ6SOu;\
-                      https://cernbox.cern.ch/index.php/s/Oqt1oLfPRzSWzdo;\
-                      https://cernbox.cern.ch/index.php/s/PXqoOMYUVq9n1Do;\
-                      https://cernbox.cern.ch/index.php/s/cIyayvcgYcUtQcC;\
-                      https://cernbox.cern.ch/index.php/s/a8rS4Wg5kaHGvBd"
+ARG CERNBOX_URL_LIST="https://cernbox.cern.ch/index.php/s/0UnkDEnKZjCqnAN;\
+                      https://cernbox.cern.ch/index.php/s/vrUwWjHz80KL5gP;\
+                      https://cernbox.cern.ch/index.php/s/ush7oAEPWNkb1xR;\
+                      https://cernbox.cern.ch/index.php/s/XmC9kOzz9eTsall;\
+                      https://cernbox.cern.ch/index.php/s/8ytMGGberiR9Ujl;\
+                      https://cernbox.cern.ch/index.php/s/OWuhBDfaxf4FV09;\
+                      https://cernbox.cern.ch/index.php/s/sk5vrkRXsqSAOru;\
+                      https://cernbox.cern.ch/index.php/s/RIMF2Ekt4060Zcv;\
+                      https://cernbox.cern.ch/index.php/s/ZcWyO1tt1yNeAxc;\
+                      https://cernbox.cern.ch/index.php/s/VtHGa440qp2Klmt;\
+                      https://cernbox.cern.ch/index.php/s/ezIPZO4Gv6eV5ry;\
+                      https://cernbox.cern.ch/index.php/s/EHRWOI9VjYrlTDM;\
+                      https://cernbox.cern.ch/index.php/s/zxlNYNP03qUe3vX;\
+                      https://cernbox.cern.ch/index.php/s/6OcNFQdGNXDAcf5;\
+                      https://cernbox.cern.ch/index.php/s/sMm8Zr3WYSBPSlk;\
+                      https://cernbox.cern.ch/index.php/s/0Bor35bDjbKGpxz;\
+                      https://cernbox.cern.ch/index.php/s/nxr9eCDLW6sMD7v;\
+                      https://cernbox.cern.ch/index.php/s/3BykHeRD0myJ7TG;\
+                      https://cernbox.cern.ch/index.php/s/ZKLPigcflkvAyK8;\
+                      https://cernbox.cern.ch/index.php/s/exW1ns2GSZqWroj;\
+                      https://cernbox.cern.ch/index.php/s/k83VYKq6A434uh3;\
+                      https://cernbox.cern.ch/index.php/s/3USnLRnzoFruApj;\
+                      https://cernbox.cern.ch/index.php/s/Vi2eR3lg8qxGZ4T;\
+                      https://cernbox.cern.ch/index.php/s/bbf0MUTsJq2VZ82;\
+                      https://cernbox.cern.ch/index.php/s/PgrJFHgDJ9jttuW;\
+                      https://cernbox.cern.ch/index.php/s/ICgImAPfqsceoXZ;\
+                      https://cernbox.cern.ch/index.php/s/Mzx9ojCenoCJEa4;\
+                      https://cernbox.cern.ch/index.php/s/5GxZlwhPESbLo4O;\
+                      https://cernbox.cern.ch/index.php/s/UvJkBtNDrIaTwdO;\
+                      https://cernbox.cern.ch/index.php/s/rISshnu30qmZ33q;\
+                      https://cernbox.cern.ch/index.php/s/7sL5al0pzl6xYw6"
 ARG INSTALLER_NAME=Xilinx_Vitis_2019.2_1024_1831
 ARG INSTALLER_PATH=/opt/${INSTALLER_NAME}/
 ARG TARBALL_NAME=${INSTALLER_NAME}.tar.gz
@@ -28,12 +51,13 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && echo "Downloading the split tarball ..." \
     && IFS='; ' read -r -a CERNBOX_URL_ARRAY <<< "${CERNBOX_URL_LIST}" \
     && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
+           INDEX=$(printf "%02d" ${i});\
            CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
            CERNBOX_URL_DOWNLOAD=$(wget -q -O - ${CERNBOX_URL} | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*"); \
-           echo -e "\tDownloading file ${i} ..."; \
+           echo -e "\tDownloading file ${INDEX} ..."; \
            echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}"; \
-           echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${i}"; \
-           wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${i} ${CERNBOX_URL_DOWNLOAD}; \
+           echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${INDEX}"; \
+           wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
        done \
     && ls -alh /opt \
     && echo "Combining the split tarball ..." \
