@@ -59,7 +59,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            echo -e "\t\tThe CERNBox download url is: ${CERNBOX_URL_DOWNLOAD}"; \
            echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${INDEX}"; \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
-           df -ih \
+           df -ih; \
        done \
     && ls -alh /opt \
     && echo "Combining the split tarball ..." \
@@ -71,7 +71,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && ls -alh /opt \
     && echo "Checking the md5sum of the combined tarball ..." \
     && checksum=$(echo $(md5sum ${TARBALL_PATH}) | awk '{print $1;}') \
-    && [[ "${checksum}" == "${REFERENCE_MD5SUM}" ]] && echo "Checksums match!" || echo "WARNING::The checksums of the original tarball and the merged tarball don't match!"\
+    && [[ "${checksum}" == "${REFERENCE_MD5SUM}" ]] && echo 'Checksums match!' || echo "WARNING::The checksums of the original tarball and the merged tarball don't match!" \
     && echo "Unpacking the tarball ..." \
     && pv ${TARBALL_PATH} | tar -xzf - --directory /opt/ \
     && ls -alh /opt \
