@@ -6,7 +6,7 @@ vivado_docker() {
     local image=""
     local local=""
     local os="sl7"
-    local registry="docker.io/"
+    local registry="docker.io"
     local remote="/home/vivado/local_mount/"
     local version="2019.2"
     local usage="$FUNCNAME [-h] [-l <loacal path to mount>] [-r <remote path to mount>] -e <entrypoint>
@@ -77,7 +77,7 @@ vivado_docker() {
 
     # Format the local mount point
     if [[ "$local" != "" ]]; then
-        local local_mount="-v ${local}:${remote}"
+        local local_mount="-v${local}:${remote}"
     else
         echo "Note: No local mount set."
     fi
