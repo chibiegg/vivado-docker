@@ -41,37 +41,37 @@ ARG CERNBOX_URL_LIST="https://cernbox.cern.ch/index.php/s/6x2zNWybG8JjchU;\
                       https://cernbox.cern.ch/index.php/s/Oeb39MzVpZimhwp;\
                       https://cernbox.cern.ch/index.php/s/WVQEmwPTLZabn9C;\
                       https://cernbox.cern.ch/index.php/s/t8g0AfGSfPpIn41"
-ARG REFERENCE_SPLIT_MD5SUM="1d9f9fdf0c4f6f357ba1215b15655d36;\
-                            873fc302090500e33e4166c450470e38;\
-                            f092890593d684cba6e664e2e6c0683b;\
-                            6edc4738f81ecc8ff9b0bce0fb1b6164;\
-                            de2f38db7351552925843acfd5608c31;\
-                            20329f7152d5e99b2059f95187af913f;\
-                            caacc0700ae5e688d637322f010275e9;\
-                            074538e0be25cd65617a8c7c91a4f7ce;\
-                            80af29e1fd72e4d82e6e73b286c71bd9;\
-                            6a0cdd88530a077f4ce51acc168716b8;\
-                            8710d1f99cdab541598bafd407f52733;\
-                            c90f6fad7e933d478b1bfc26daea4e42;\
-                            d4b88bd9153c15c7b59ca6de3eae1d78;\
-                            39b581c65d0cb000d51dcdaa4cd3d330;\
-                            b3c6d104368d4410e421e194571bf009;\
-                            f997d83b8210c9b9ec87cb4e23444c63;\
-                            014013cbf04f8e2c5773d364237e63d8;\
-                            52b58b3167917f5f31a2a3546e5fe17d;\
-                            fe4a93d62c2e19b79419739384eca9f3;\
-                            62294757f4c8afd025308eeb8cc86e02;\
-                            7c97982f5e9e6b088ea436771f067e9f;\
-                            0c9898d201d5c8206b74c74710cba96f;\
-                            2a015fb3873af334570c75c27b3a17da;\
-                            b5c3c82f95fbcb4fa8c075e6bd06ebbd;\
-                            6544db39d9c8d8a137939a6d5b28753c;\
-                            97df82dd14ca466d89ffb5fce2ed8e6e;\
-                            ad36045bb06feaaf782163ed946d1fb2;\
-                            9bf821a3ab0a43a8264ccea73858a5cd;\
-                            734110f32219eef299a97caad8567541;\
-                            b7f63e4a98e784fa7c1974dc7fe3fdd0;\
-                            47e27d1dc0b808eaa8d96581033e5047"
+ARG REFERENCE_SPLIT_MD5SUM_LIST="1d9f9fdf0c4f6f357ba1215b15655d36;\
+                                 873fc302090500e33e4166c450470e38;\
+                                 f092890593d684cba6e664e2e6c0683b;\
+                                 6edc4738f81ecc8ff9b0bce0fb1b6164;\
+                                 de2f38db7351552925843acfd5608c31;\
+                                 20329f7152d5e99b2059f95187af913f;\
+                                 caacc0700ae5e688d637322f010275e9;\
+                                 074538e0be25cd65617a8c7c91a4f7ce;\
+                                 80af29e1fd72e4d82e6e73b286c71bd9;\
+                                 6a0cdd88530a077f4ce51acc168716b8;\
+                                 8710d1f99cdab541598bafd407f52733;\
+                                 c90f6fad7e933d478b1bfc26daea4e42;\
+                                 d4b88bd9153c15c7b59ca6de3eae1d78;\
+                                 39b581c65d0cb000d51dcdaa4cd3d330;\
+                                 b3c6d104368d4410e421e194571bf009;\
+                                 f997d83b8210c9b9ec87cb4e23444c63;\
+                                 014013cbf04f8e2c5773d364237e63d8;\
+                                 52b58b3167917f5f31a2a3546e5fe17d;\
+                                 fe4a93d62c2e19b79419739384eca9f3;\
+                                 62294757f4c8afd025308eeb8cc86e02;\
+                                 7c97982f5e9e6b088ea436771f067e9f;\
+                                 0c9898d201d5c8206b74c74710cba96f;\
+                                 2a015fb3873af334570c75c27b3a17da;\
+                                 b5c3c82f95fbcb4fa8c075e6bd06ebbd;\
+                                 6544db39d9c8d8a137939a6d5b28753c;\
+                                 97df82dd14ca466d89ffb5fce2ed8e6e;\
+                                 ad36045bb06feaaf782163ed946d1fb2;\
+                                 9bf821a3ab0a43a8264ccea73858a5cd;\
+                                 734110f32219eef299a97caad8567541;\
+                                 b7f63e4a98e784fa7c1974dc7fe3fdd0;\
+                                 47e27d1dc0b808eaa8d96581033e5047"
 
 RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && rpm --import http://www.ivarch.com/personal/public-key.txt \
@@ -82,6 +82,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && ls -alh / \
     && echo "Downloading the split tarball ..." \
     && IFS='; ' read -r -a CERNBOX_URL_ARRAY <<< "${CERNBOX_URL_LIST}" \
+    && IFS='; ' read -r -a REFERENCE_SPLIT_MD5SUM_ARRAY <<< "${REFERENCE_SPLIT_MD5SUM_LIST}" \
     && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
            INDEX=$(printf "%02d" ${i}); \
            CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
@@ -92,7 +93,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
            echo -e "\tChecking the md5sum ..."; \
            checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}'); \
-           reference_checksum="${REFERENCE_SPLIT_MD5SUM[$i]}"; \
+           reference_checksum="${REFERENCE_SPLIT_MD5SUM_ARRAY[$i]}"; \
            [[ "${checksum}" == "${reference_checksum}" ]] && { echo -e "Checksums match!"; } || { echo -e "WARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${reference_checksum})!"; break; }; \
            df -h; \
        done \

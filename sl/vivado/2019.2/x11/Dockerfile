@@ -37,33 +37,33 @@ ARG CERNBOX_URL_LIST="https://cernbox.cern.ch/index.php/s/JGU1wnAVDPUeiRd;\
                       https://cernbox.cern.ch/index.php/s/GtCo6bNc85H39JU;\
                       https://cernbox.cern.ch/index.php/s/XKkwdaoAhIDu2rJ;\
                       https://cernbox.cern.ch/index.php/s/1BIPYqyk2RtEnYT"
-ARG REFERENCE_SPLIT_MD5SUM="f611d6fc1f45911e5667f759089fcf3f;\
-                            4899a3efb371c264febc5d64af828694;\
-                            c08f68bec8745fcaf7511307f72a0cac;\
-                            3058a2b5eaa88a0a2afcdcdf8cd8e64f;\
-                            6378485fb67d620fc48d5003e9af6555;\
-                            1c8f17ec42cbadb7976348ba9b51bb4e;\
-                            33e1e0c72632cc0059fc28f8af178ebb;\
-                            2406db2a80e2f45b37d9e2ca67fb74fc;\
-                            0ddd4cf0ff8729c3b6e3b905f35d232e;\
-                            f500303372ce39a1779817547493f3d9;\
-                            f56e4a1fcdaf5ee70c9018abcbf25183;\
-                            49da20695e1ec3b52415bdf45f1feef2;\
-                            2f97c177acea621eccccb51a191f3328;\
-                            991ba25a478d2c75ed585a110880ef26;\
-                            f86422d7ea022f9676ea29c9115fbc59;\
-                            a23ca055c55cb731f73d9de7855b98d2;\
-                            fef1b9899ff8b52378ef24bf4d9b805f;\
-                            c0b2e1fbe9d8adba37e0b5067e40e913;\
-                            bbec88b77d8ce8b2335a3e06dc2c39fe;\
-                            68258c436f76a8eb2d3ca8a196e6d51b;\
-                            7947bf0349e8cae56031e25e257c4e90;\
-                            7f134ef90a468bffc7aaeb9c5620af94;\
-                            ab5c78ddb69e3f7126be970f81bf793c;\
-                            6389de8d45a0387426826ffa8c2e307a;\
-                            cad71456e78576a407b0b479224fcd81;\
-                            005aaa902ceba12b82e9ac7499cfe63a;\
-                            32cc297b01b41e3e08fd900538925b51"
+ARG REFERENCE_SPLIT_MD5SUM_LIST="f611d6fc1f45911e5667f759089fcf3f;\
+                                 4899a3efb371c264febc5d64af828694;\
+                                 c08f68bec8745fcaf7511307f72a0cac;\
+                                 3058a2b5eaa88a0a2afcdcdf8cd8e64f;\
+                                 6378485fb67d620fc48d5003e9af6555;\
+                                 1c8f17ec42cbadb7976348ba9b51bb4e;\
+                                 33e1e0c72632cc0059fc28f8af178ebb;\
+                                 2406db2a80e2f45b37d9e2ca67fb74fc;\
+                                 0ddd4cf0ff8729c3b6e3b905f35d232e;\
+                                 f500303372ce39a1779817547493f3d9;\
+                                 f56e4a1fcdaf5ee70c9018abcbf25183;\
+                                 49da20695e1ec3b52415bdf45f1feef2;\
+                                 2f97c177acea621eccccb51a191f3328;\
+                                 991ba25a478d2c75ed585a110880ef26;\
+                                 f86422d7ea022f9676ea29c9115fbc59;\
+                                 a23ca055c55cb731f73d9de7855b98d2;\
+                                 fef1b9899ff8b52378ef24bf4d9b805f;\
+                                 c0b2e1fbe9d8adba37e0b5067e40e913;\
+                                 bbec88b77d8ce8b2335a3e06dc2c39fe;\
+                                 68258c436f76a8eb2d3ca8a196e6d51b;\
+                                 7947bf0349e8cae56031e25e257c4e90;\
+                                 7f134ef90a468bffc7aaeb9c5620af94;\
+                                 ab5c78ddb69e3f7126be970f81bf793c;\
+                                 6389de8d45a0387426826ffa8c2e307a;\
+                                 cad71456e78576a407b0b479224fcd81;\
+                                 005aaa902ceba12b82e9ac7499cfe63a;\
+                                 32cc297b01b41e3e08fd900538925b51"
 
 RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && rpm --import http://www.ivarch.com/personal/public-key.txt \
@@ -74,6 +74,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && ls -alh / \
     && echo "Downloading the split tarball ..." \
     && IFS='; ' read -r -a CERNBOX_URL_ARRAY <<< "${CERNBOX_URL_LIST}" \
+    && IFS='; ' read -r -a REFERENCE_SPLIT_MD5SUM_ARRAY <<< "${REFERENCE_SPLIT_MD5SUM_LIST}" \
     && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
            INDEX=$(printf "%02d" ${i}); \
            CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
@@ -84,7 +85,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
            echo -e "\tChecking the md5sum ..."; \
            checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}'); \
-           reference_checksum="${REFERENCE_SPLIT_MD5SUM[$i]}"; \
+           reference_checksum="${REFERENCE_SPLIT_MD5SUM_ARRAY[$i]}"; \
            [[ "${checksum}" == "${reference_checksum}" ]] && { echo -e "\tChecksums match!"; } || { echo -e "\tWARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${reference_checksum})!"; break; }; \
            df -h; \
        done \
