@@ -91,7 +91,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            echo -e "\t\tThe output filename is: ${TARBALL_PATH}.part${INDEX}"; \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
            echo -e "\tChecking the md5sum ..."; \
-           checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}') \
+           checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}'); \
            [[ "${checksum}" == "${REFERENCE_SPLIT_MD5SUM[$i]}" ]] && { echo 'Checksums match!'; } || { echo "WARNING::The checksum of part $i doesn't match its reference checksum!"; break; }; \
            df -h; \
        done \
