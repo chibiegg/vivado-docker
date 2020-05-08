@@ -75,7 +75,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && echo "Downloading the split tarball ..." \
     && IFS='; ' read -r -a CERNBOX_URL_ARRAY <<< "${CERNBOX_URL_LIST}" \
     && for i in "${!CERNBOX_URL_ARRAY[@]}"; do \
-           INDEX=$(printf "%02d" ${i});\
+           INDEX=$(printf "%02d" ${i}); \
            CERNBOX_URL="${CERNBOX_URL_ARRAY[$i]}"; \
            CERNBOX_URL_DOWNLOAD=$(wget -q -O - ${CERNBOX_URL} | grep downloadURL | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*"); \
            echo -e "\tDownloading file ${INDEX} ..."; \
@@ -84,7 +84,8 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            wget --progress=dot:giga -c -O ${TARBALL_PATH}.part${INDEX} ${CERNBOX_URL_DOWNLOAD}; \
            echo -e "\tChecking the md5sum ..."; \
            checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}'); \
-           [[ "${checksum}" == "${REFERENCE_SPLIT_MD5SUM[$i]}" ]] && { echo -e "\tChecksums match!"; } || { echo -e "\tWARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${REFERENCE_SPLIT_MD5SUM})!"; break; }; \
+           reference_checksum="${REFERENCE_SPLIT_MD5SUM[$i]}"; \
+           [[ "${checksum}" == "${reference_checksum}" ]] && { echo -e "\tChecksums match!"; } || { echo -e "\tWARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${reference_checksum})!"; break; }; \
            df -h; \
        done \
     && ls -alh /opt \
