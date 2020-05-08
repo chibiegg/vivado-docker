@@ -86,7 +86,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
            echo -e "\tChecking the md5sum ..."; \
            checksum=$(echo $(md5sum ${TARBALL_PATH}.part${INDEX}) | awk '{print $1;}'); \
            reference_checksum="${REFERENCE_SPLIT_MD5SUM_ARRAY[$i]}"; \
-           [[ "${checksum}" == "${reference_checksum}" ]] && { echo -e "\tChecksums match!"; } || { echo -e "\tWARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${reference_checksum})!"; break; }; \
+           [[ "${checksum}" == "${reference_checksum}" ]] && { echo -e "\t\tChecksums match!"; } || { echo -e "\t\tWARNING::The checksum of part $i (${checksum}) doesn't match its reference checksum (${reference_checksum})!"; break; }; \
            df -h; \
        done \
     && ls -alh /opt \
