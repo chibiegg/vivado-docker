@@ -131,7 +131,7 @@ RUN cat /opt/setup_ivarch.txt >> /etc/yum.conf \
     && echo "Setting up the 'vitis' user ..." \
     && useradd -ms /bin/bash vitis \
     && chown -R vitis /home/vitis \
-    && echo "source /opt/Xilinx/Vitis/Vitis/${VERSION}/settings64.sh" >> /home/vitis/.bashrc
+    && echo "source /opt/Xilinx/Vitis/${VERSION}/settings64.sh" >> /home/vitis/.bashrc
 USER vitis
 WORKDIR /home/vitis
 

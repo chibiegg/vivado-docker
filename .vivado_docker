@@ -9,8 +9,9 @@ vivado_docker() {
     local registry="docker.io"
     local remote="/home/vivado/local_mount/"
     local version="2019.2"
+    local program_version="vivado${version}"
     local usage="$FUNCNAME [-h] [-l <loacal path to mount>] [-r <remote path to mount>] -e <entrypoint>
-    -- opens a docker container which contains Xilinx Vivado HLx Design Edition
+    -- opens a docker container which contains Xilinx Vivado/Vitis HLx Design Edition
        there are multiple entrypoints (programs) to choose from
 
     entrypoints:
@@ -31,11 +32,12 @@ vivado_docker() {
         -r  remote path to mount in the container (default: ${remote})
         -R  the Docker registry of the image (default: ${registry})
         -v  the Vivado version to use (default: ${version})
+	-V  use Vitis rather than Vivado
 
     example: vivado_docker -e bash -l `pwd` -r /root/workdir"
 
     local OPTIND OPTARG
-    while getopts 'hde:i:l:o:r:R:v:' option; do
+    while getopts 'hde:i:l:o:r:R:v:V' option; do
         case "$option" in
             d) debug="true"
                ;;
@@ -55,7 +57,10 @@ vivado_docker() {
             R) registry=$OPTARG
                ;;
             v) version=$OPTARG
+	       program_version="vivado${version}"
                ;;
+	    V) vitis="true"
+	       ;;
             :) printf "missing argument for -%s\n" "$OPTARG" >&2
                echo "$usage" >&2
                return -1
@@ -75,6 +80,12 @@ vivado_docker() {
         return -3
     fi
 
+    # Make some modifications if using Vitis rather than Vivado
+    if [[ "$vitis" == "true" ]]; then
+	remote="${remote/\/home\/vivado/\/home\/vitis}"
+	program_version="${program_version/vivado/vitis}"
+    fi
+    
     # Format the local mount point
     if [[ "$local" != "" ]]; then
         local local_mount="-v${local}:${remote}"
@@ -85,9 +96,9 @@ vivado_docker() {
     # Format the image used
     if [[ -z ${image} ]]; then
         if [[ "${registry}" == *"docker.io"* ]]; then
-            image=${registry}/aperloff/vivado-docker:${os}_vivado${version}_x11
+            image=${registry}/aperloff/vivado-docker:${os}_${program_version}_x11
         elif [[ "${registry}" == *"gitlab-registry.cern.ch"* ]]; then
-            image=${registry}/aperloff/vivado-docker/${os}_vivado${version}_x11:latest
+            image=${registry}/aperloff/vivado-docker/${os}_${program_version}_x11:latest
         fi
     fi
 
@@ -122,10 +133,16 @@ vivado_docker() {
     fi
     case "${entrypoint}" in
         vivado)
-            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} ${image} /opt/Xilinx/Vivado/${version}/bin/vivado
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /opt/Xilinx/Vivado/${version}/bin/vivado ${image}
             ;;
-        hls)
+        vivado_hls)
             docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /opt/Xilinx/Vivado/${version}/bin/vivado_hls ${image}
+            ;;
+        vitis)
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /opt/Xilinx/Vitis/${version}/bin/vitis ${image}
+            ;;
+        vitis_hls)
+            docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /opt/Xilinx/Vitis/${version}/bin/vitis_hls ${image}
             ;;
         bash)
             docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 ${local_mount} --entrypoint /bin/bash ${image}
