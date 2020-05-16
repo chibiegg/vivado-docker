@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vivado_docker() {
+xilinx_docker() {
     local debug="false"
     local entrypoint=""
     local image=""
@@ -34,7 +34,7 @@ vivado_docker() {
         -v  the Vivado version to use (default: ${version})
 	-V  use Vitis rather than Vivado
 
-    example: vivado_docker -e bash -l `pwd` -r /root/workdir"
+    example: xilinx_docker -e bash -l `pwd` -r /root/workdir"
 
     local OPTIND OPTARG
     while getopts 'hde:i:l:o:r:R:v:V' option; do
