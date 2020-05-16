@@ -139,4 +139,4 @@ ENV DISPLAY :0
 ENV GEOMETRY 1920x1200
 ENV VERSION=${VERSION}
 
-ENTRYPOINT /opt/Xilinx/Vitis/Vitis/${VERSION}/bin/vitis
+ENTRYPOINT /opt/Xilinx/Vitis/${VERSION}/bin/vitis
