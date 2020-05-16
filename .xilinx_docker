@@ -16,8 +16,10 @@ xilinx_docker() {
 
     entrypoints:
         1) vivado
-        2) hls
-        3) bash
+        2) vivado_hls
+        3) vitis (if available)
+        4) vitis_hls (if available)
+        5) bash
 
     known registries:
         1) docker.io (a.k.a DockerHub)
