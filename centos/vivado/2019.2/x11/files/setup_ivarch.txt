@@ -1,0 +1,6 @@
+
+[ivarch]
+name=RPMs from ivarch.com
+baseurl=http://www.ivarch.com/programs/rpms/$basearch/
+enabled=1
+gpgcheck=1

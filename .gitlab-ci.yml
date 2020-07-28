@@ -46,9 +46,10 @@ stages:
 
 # Jobs/Includes ---------------------------------------------------------------
 include:
-#    - local: '/ubuntu/vivado/2019.1/vnc/.gitlab-ci.yml'
+    - local: '/centos/vivado/2019.2/x11/.gitlab-ci.yml'
 #    - local: '/sl/vivado/2018.2/x11/.gitlab-ci.yml'
 #    - local: '/sl/vivado/2019.1/x11/.gitlab-ci.yml'
 #    - local: '/sl/vivado/2019.2/x11/.gitlab-ci.yml'
 #    - local: '/sl/vitis/2019.2/x11/.gitlab-ci.yml'
-    - local: '/sl/vitis/2020.1/x11/.gitlab-ci.yml'
+#    - local: '/sl/vitis/2020.1/x11/.gitlab-ci.yml'
+#    - local: '/ubuntu/vivado/2019.1/vnc/.gitlab-ci.yml'
