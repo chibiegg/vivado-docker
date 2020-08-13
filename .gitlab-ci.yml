@@ -3,7 +3,7 @@
 
 # Variables -------------------------------------------------------------------
 variables:
-    PROJ_NAME: '${SERIES}-$CI_COMMIT_REF_NAME-${OS}-${VERSION}-${VIEW}'
+    PROJ_NAME: '${SERIES}-$CI_COMMIT_REF_NAME-${OS}${OS_VERSION}-${VERSION}-${VIEW}'
 
 
 # Stages ----------------------------------------------------------------------
@@ -30,7 +30,7 @@ stages:
     variables:
         DOCKER_DRIVER: overlay2
         NO_CACHE: "true"
-        CONTEXT_DIR: "${OS}/${SERIES}/${VERSION}/${VIEW}/"
+        CONTEXT_DIR: "${OS}/${OS_VERSION}/${SERIES}/${VERSION}/${VIEW}/"
         FROM: "${OS}:${OS_VERSION}"
         TO: "${CI_REGISTRY_IMAGE}/${OS}${OS_VERSION}_${SERIES}${VERSION}_${VIEW}:latest"
     script:
@@ -46,10 +46,11 @@ stages:
 
 # Jobs/Includes ---------------------------------------------------------------
 include:
-    - local: '/centos/vivado/2019.2/x11/.gitlab-ci.yml'
-#    - local: '/sl/vivado/2018.2/x11/.gitlab-ci.yml'
-#    - local: '/sl/vivado/2019.1/x11/.gitlab-ci.yml'
-#    - local: '/sl/vivado/2019.2/x11/.gitlab-ci.yml'
-#    - local: '/sl/vitis/2019.2/x11/.gitlab-ci.yml'
-#    - local: '/sl/vitis/2020.1/x11/.gitlab-ci.yml'
-#    - local: '/ubuntu/vivado/2019.1/vnc/.gitlab-ci.yml'
+    - local: '/centos/7.4.1708/vivado/2019.2/x11/.gitlab-ci.yml'
+#    - local: '/centos/7.7.1908/vivado/2019.2/x11/.gitlab-ci.yml'
+#    - local: '/sl/7/vivado/2018.2/x11/.gitlab-ci.yml'
+#    - local: '/sl/7/vivado/2019.1/x11/.gitlab-ci.yml'
+#    - local: '/sl/7/vivado/2019.2/x11/.gitlab-ci.yml'
+#    - local: '/sl/7/vitis/2019.2/x11/.gitlab-ci.yml'
+#    - local: '/sl/7/vitis/2020.1/x11/.gitlab-ci.yml'
+#    - local: '/ubuntu/18.04/vivado/2019.1/vnc/.gitlab-ci.yml'

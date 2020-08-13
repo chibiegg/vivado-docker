@@ -1,22 +1,26 @@
-build_centos_vivado2019-2_x11:
+build_sl7_vitis2020-1_x11:
     extends: .job_template
+    tags:
+        - cu-lnxfarm327-docker-privileged-xl
     variables:
-        OS: centos
-        OS_VERSION: "7.7.1908"
-        SERIES: "vivado"
-        VERSION: "2019.2"
+        OS: sl
+        OS_VERSION: "7"
+        SERIES: "vitis"
+        VERSION: "2020.1"
         VIEW: x11
 
-build_centos_vivado2019-2_x11_dockerhub:
+build_sl7_vitis2020-1_x11_dockerhub:
     extends: .job_template
+    tags:
+        - cu-lnxfarm327-docker-privileged-xl
     variables:
         CI_REGISTRY: https://index.docker.io/v1/
         CI_REGISTRY_USER: ${DOCKER_USERNAME}
         CI_REGISTRY_PASSWORD: ${DOCKER_PASSWORD}
         CI_REGISTRY_IMAGE:  index.docker.io/aperloff
-        OS: centos
-        OS_VERSION: "7.7.1908"
-        SERIES: "vivado"
+        OS: sl
+        OS_VERSION: "7"
+        SERIES: "vitis"
         TO: "${CI_REGISTRY_IMAGE}/vivado-docker:${OS}${OS_VERSION}_${SERIES}${VERSION}_${VIEW}"
-        VERSION: "2019.2"
+        VERSION: "2020.1"
         VIEW: x11

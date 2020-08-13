@@ -1,4 +1,4 @@
-build_sl_vivado2019-2_x11:
+build_sl7_vivado2019-2_x11:
     extends: .job_template
     variables:
         OS: sl
@@ -7,7 +7,7 @@ build_sl_vivado2019-2_x11:
         VERSION: "2019.2"
         VIEW: x11
 
-build_sl_vivado2019-2_x11_dockerhub:
+build_sl7_vivado2019-2_x11_dockerhub:
     extends: .job_template
     variables:
         CI_REGISTRY: https://index.docker.io/v1/

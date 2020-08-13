@@ -1,4 +1,4 @@
-build_ubuntu_vivado2019-1_vnc:
+build_ubuntu18-04_vivado2019-1_vnc:
     extends: .job_template
     variables:
         OS: ubuntu

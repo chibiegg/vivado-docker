@@ -1,4 +1,4 @@
-build_sl_vitis2019-2_x11:
+build_sl7_vitis2019-2_x11:
     extends: .job_template
     tags:
         - cu-lnxfarm327-docker-privileged-xl
@@ -9,7 +9,7 @@ build_sl_vitis2019-2_x11:
         VERSION: "2019.2"
         VIEW: x11
 
-build_sl_vitis2019-2_x11_dockerhub:
+build_sl7_vitis2019-2_x11_dockerhub:
     extends: .job_template
     tags:
         - cu-lnxfarm327-docker-privileged-xl
