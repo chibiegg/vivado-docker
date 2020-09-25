@@ -1,12 +1,13 @@
 # Linux Container with Xilinx Vivado/Vivado HLS
-For many reasons having Xilinx Vivado/Vivado HLS installed in a docker image can be useful. This package is setup to build docker images with various setups using the CERN GitLab docker-builder runners. The configurations for the docker builds can be found in the table below:
 
-| **Linux Flavor** | **Vivado Version** | **X11** | **VNC** | **Status** |
-| ---------------- | ------------------ | ------- | ------- | ---------- |
-| Ubuntu 18.04     | 2019.1             | Yes     | Yes     | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) |
-| SL7              | 2018.2             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
-| SL7              | 2019.1             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
-| SL7              | 2019.2             | Yes     | No      | [![pipeline status](https://gitlab.cern.ch/aperloff/vivado-docker/badges/master/pipeline.svg)](https://gitlab.cern.ch/aperloff/vivado-docker/commits/master) | 
+For many reasons having Xilinx Vivado/Vivado HLS installed in a docker image can be useful. This package is setup to build docker images with various setups. The configurations for the docker builds can be found in the table below:
+
+| **Linux Flavor** | **Vivado Version** | **X11** | **VNC** |
+| ---------------- | ------------------ | ------- | ------- |
+| Ubuntu 18.04     | 2019.1             | Yes     | Yes     |
+| SL7              | 2018.2             | Yes     | No      |
+| SL7              | 2019.1             | Yes     | No      |
+| SL7              | 2019.2             | Yes     | No      |
 
 The Ubuntu version features both X11 and VNC and is generally less secure. The Scientific Linux (SL) container was built with security in mind. It is meant to conform with the security policies laid out by Fermi National Accelerator Laboratory (FNAL).
 
@@ -20,19 +21,18 @@ In general, however, it's best to lock down docker so that ssh to the remote mac
 ```
 
 ## Build Instructions
-This repository was designed for the containers to be built using the CI/CD system of CERN's GitLab instance. The primary reason for this is that the Xilinx Vivado installation file is hosted on CERNBox and therefore the fastest connection to a build system will be at CERN.
-
-Using the recommended method, once changes are pushed to the GitHub repository, they are synchronized with the GitLab instance (manually or automatically) and then a CI/CD pipeline is triggered manually. From there is it just a matter of time before the containers are ready, ~1.5 hours is all is successful.
-
-Still, it is possibly to build the system somewhere other than a CERN runner. Because you will no longer be using Kaniko, the docker build will have to be configured manually. This might also result in a larger image file because of different cleanup and cache settings. The commands to run are as follows:
 
 ```bash
-docker login -u <CERN SSO Username> -p <CERN SSO Password> gitlab-registry.cern.ch
-docker build --pull -t <username>/vivado-docker/<container name>:<container tag> <relative path to Dockerfile>
-docker push <username>/vivado-docker/<container name>:<container tag>
+git clone https://github.com/chibiegg/vivado-docker
+cd vivado-docker
+docker build -t vivado:<container tag> <Dockerfile directory>
 ```
 
-**Note:** The container image name must contain only lowercase letters.
+### for example
+
+```
+docker build -t vivado:2019.1-ubuntu18.04-vnc ubuntu/18.04/vivado/2019.1/vnc
+```
 
 ## Run Using X11
 This is my preferred way of accessing the remote windows. For one, it requires fewer additions to the base operating system. Additionally, it's easier to resize the windows, not having to set the geometry when running the container. That being said, some care must be taken to secure the connection between the remote system and the localhost.
@@ -46,10 +46,9 @@ Add the local interface to the list of acceptable connections by doing ```xhost 
 
 To open the remote program and start an x-window use the command:
 ```bash
-docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag> /opt/Xilinx/Vivado/2019.1/bin/vivado
+docker run --rm -it --net=host -e DISPLAY=host.docker.internal:0 vivado:<container tag> /opt/Xilinx/Vivado/2019.1/bin/vivado
 ```
 
-**Note:** You may need to do ```docker login gitlab-registry.cern.ch``` in order to pull the image from GitLab. Use your CERN username and password.
 
 ### Use the System IP Address
 This is a less secure method of connecting the remote program to the X11 system on the host. This is because you are allowing the remote system to access the internet and then connect to your system's external IP address. While the xhost command does limit the connections to just that one address, this is still note the best practice and may get you booted off the network at FNAL.
@@ -57,7 +56,7 @@ This is a less secure method of connecting the remote program to the X11 system 
 ```bash
 IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')  # use en1 for Wifi
 xhost + $IP
-docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag> /opt/Xilinx/Vivado/2019.1/bin/vivado
+docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix vivado:<container tag> /opt/Xilinx/Vivado/2019.1/bin/vivado
 ```
 
 **Note:** I found that at one point I needed to reset my xhost list by turning off the xhost filtering and then turning it back on ```xhost <-/+>```. At FNAL, remember to disconnect from the internet before you do this because it will be seen as opening up a hole in your firewall and get you blocked from the network.
@@ -65,22 +64,22 @@ docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix gitlab-reg
 ### Alternate Entrypoint
 To override the entrypoint, you need to use the ```--entrypoint``` option. You may want to do this, for instance, if you want to open a bash terminal rather than Vivado directly.
 ```bash
-docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag>
+docker run --rm -it -e DISPLAY=$IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash vivado:<container tag>
 ```
 
-### vivado_docker Bash Function
-Inside the file ```.vivado_docker``` there is a bash function named vivado_docker. This function is meant to help the user quickly spin up a one of these docker containers. Rather than having to remember the entire docker run command and the variations for each entrypoint, this function provides a much simpler interface. It is based on the "Direct Connection" method mentioned above. I find it useful to source the ```.vivado_docker``` file from within my login script.
+### xilinx_docker Bash Function
+Inside the file ```.xilinx_docker``` there is a bash function named xilinx_docker. This function is meant to help the user quickly spin up a one of these docker containers. Rather than having to remember the entire docker run command and the variations for each entrypoint, this function provides a much simpler interface. It is based on the "Direct Connection" method mentioned above. I find it useful to source the ```.xilinx_docker``` file from within my login script.
 
 For a complete set of directions on how to use this utility, see the functions help message. Simply use:
 ```bash
-vivado_docker -h
+xilinx_docker -h
 ```
 
 ## Run Using VNC
 VNC is not my favorite way to interact with remote programs. Resizing of windows always seems haphazard. That being said, the Ubuntu version of this container was built with VNC available. To run it, use the command:
 
 ```
-docker run --rm -ti -p 5900:5900 -v `pwd`/work:/home/vivado/ -e GEOMETRY=1920x1200 gitlab-registry.cern.ch/aperloff/vivado-docker/<container name>:<container tag>
+docker run --rm -ti -p 5900:5900 -v `pwd`/work:/home/vivado/ -e GEOMETRY=1920x1200 vivado:<container tag>
 ```
 
 You will be asked to enter a 6+ character password for the VNC server. Then on the host machine use the following command to connect to the VNC server on the container:
