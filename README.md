@@ -2,12 +2,12 @@
 
 For many reasons having Xilinx Vivado/Vivado HLS installed in a docker image can be useful. This package is setup to build docker images with various setups. The configurations for the docker builds can be found in the table below:
 
-| **Linux Flavor** | **Vivado Version** | **X11** | **VNC** |
-| ---------------- | ------------------ | ------- | ------- |
-| Ubuntu 18.04     | 2019.1             | Yes     | Yes     |
-| SL7              | 2018.2             | Yes     | No      |
-| SL7              | 2019.1             | Yes     | No      |
-| SL7              | 2019.2             | Yes     | No      |
+| **Linux Flavor** | **Vivado Version** | **X11** |   **VNC**   |
+| ---------------- | ------------------ | ------- | ----------- |
+| Ubuntu 18.04     | 2019.1             | Yes     | Yes         |
+| SL7              | 2018.2             | Yes     | Unsupported |
+| SL7              | 2019.1             | Yes     | Unsupported |
+| SL7              | 2019.2             | Yes     | Unsupported |
 
 The Ubuntu version features both X11 and VNC and is generally less secure. The Scientific Linux (SL) container was built with security in mind. It is meant to conform with the security policies laid out by Fermi National Accelerator Laboratory (FNAL).
 
@@ -22,16 +22,39 @@ In general, however, it's best to lock down docker so that ssh to the remote mac
 
 ## Build Instructions
 
+### Clone the repository
+
 ```bash
 git clone https://github.com/chibiegg/vivado-docker
 cd vivado-docker
+```
+
+### Download Vivado
+
+Download Vivado for linux from Xilinx and locate in the `downloads/` directory. (ex. `downloads/Xilinx_Vivado_SDK_2019.1_0524_1430.tar.gz` )
+
+### Build
+
+```bash
 docker build -t vivado:<container tag> <Dockerfile directory>
 ```
 
-### for example
+or 
 
+```bash
+./build.sh <distribution> <distribution version> <package> <version> <type>
 ```
+
+#### for example
+
+```bash
 docker build -t vivado:2019.1-ubuntu18.04-vnc ubuntu/18.04/vivado/2019.1/vnc
+```
+
+or 
+
+```bash
+./build.sh ubuntu 18.04 vivado 2019.1 vnc
 ```
 
 ## Run Using X11

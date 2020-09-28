@@ -1,8 +1,0 @@
-build_ubuntu18-04_vivado2019-1_vnc:
-    extends: .job_template
-    variables:
-        OS: ubuntu
-        OS_VERSION: "18.04"
-        SERIES: "vivado"
-        VERSION: "2019.1"
-        VIEW: vnc
